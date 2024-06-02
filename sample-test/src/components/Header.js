@@ -1,17 +1,43 @@
-// src/components/Header.js
-import React from 'react';
+import React,{useState, useEffect} from 'react';
+import axios from 'axios';
 
-function Header() {
+export function App1(props) {
+  const [error, setError]= useState(null);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState([]);
+
+ useEffect(()=>{
+  const fetchData = async()=>{
+    try {
+        setLoading(true);
+        const response = await axios.get('https://jsonplaceholder.typicode.com/comments');
+        setData(response.data);
+    }
+    catch (error){
+        setError(error.message);
+      } finally {
+      setLoading(false);
+    }
+    };
+    fetchData();
+  },[]);
+
+  if(loading){
+    return <div> Loading...</div>;
+  }
+  if(error){
+    return <div>Error: {error}</div>
+  }
+
   return (
-    <header className="Header">
-      <h1>My Website</h1>
-      <nav>
-        <a href="#home">Home</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </header>
+    <div className='App'>
+      <h1>Hello React.</h1>
+      <h2>Start editing to see some magic happen!</h2>
+      <ul>
+        {data.map(item =>(
+          <li key={item.id}>{item.name}</li>
+        ) )}
+      </ul>
+    </div>
   );
 }
-
-export default Header;
